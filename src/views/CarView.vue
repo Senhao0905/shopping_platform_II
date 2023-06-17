@@ -1,5 +1,5 @@
 <script>
-import {mapActions} from "pinia";
+import { mapActions } from "pinia";
 import indexStore from "../stores/indexStore"
 export default {
     data() {
@@ -9,7 +9,7 @@ export default {
             selectItem: [],
             money: 0,
             prop: null,
-            src : null
+            src: null
         }
     },
     mounted() {
@@ -22,15 +22,15 @@ export default {
             .then(data => {
                 console.log(data);
                 this.shopCarList = data.getCommodityInfoList;
-                
+
                 this.shopCarList.forEach(item => {
                     this.moneySum += (+item.price * item.quantity);
-                    item.src =`../../pic/${item.imgPath}.jpg`
+                    item.src = `../../pic/${item.imgPath}.jpg`
                 })
                 console.log(this.shopCarList);
                 console.log(this.moneySum);
             })
-            this.updateLocation(300);
+        this.updateLocation(300);
     },
     methods: {
         test(name, number) {
@@ -76,34 +76,39 @@ export default {
             })
             console.log(this.moneySum);
         },
-        del(name, number,price) {
+        del(name, number, price) {
             console.log(name);
             console.log(number)
             const quantity = document.getElementById(number).value;
             console.log(quantity);
-            this.shopCarList = this.shopCarList.filter(item => {
-                return item.name !== name;
-            })
-            console.log(this.shopCarList);
 
+            console.log(this.shopCarList);
             let body = {
-                commodityNumber : number
+                commodityNumber: number
             }
             fetch("http://localhost:8080/dele_Commodity_FromCart", {
                 method: "POST",
-                 headers: {
+                headers: {
                     "Content-Type": "application/json",
                 },
-                 credentials: 'include',
+                credentials: 'include',
                 body: JSON.stringify(body)
             })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                if(data.message == "Successful!!"){
-                    this.money -= ( +price* quantity);
-                }
-            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.message == "Successful!!") {
+                        this.selectItem.forEach(item => {
+                            if (item == name) {
+                                this.money -= (+price * quantity);
+                            }
+                        })
+
+                        this.shopCarList = this.shopCarList.filter(item => {
+                            return item.name !== name;
+                        })
+                    }
+                })
         },
         checkout() {
             let comNumber = [];
@@ -167,23 +172,15 @@ export default {
                             <div class="infobox">
                                 <h2>商品</h2>
                                 <h2>{{ item.name }}</h2>
-                                <select v-bind:id="item.commodityNumber" class="form-select"
-                                    aria-label="Default select example" v-bind:value="item.quantity"
+                                <!-- @change="test2(item.name, item.commodityNumber)" -->
+                                <input :id="item.commodityNumber" type="number" v-bind:value="item.quantity"
                                     @change="test2(item.name, item.commodityNumber)">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                </select>
                                 <p>${{ item.price }}</p>
                             </div>
                         </div>
 
                         <div class="cancel">
-                            <i class="fa-solid fa-xmark" @click="del(item.name,item.commodityNumber,item.price)"></i>
+                            <i class="fa-solid fa-xmark" @click="del(item.name, item.commodityNumber, item.price)"></i>
                         </div>
 
                     </div>
@@ -282,9 +279,11 @@ export default {
                     height: 120px;
                     margin-left: 20px;
                     background-color: aqua;
-                    img{
-                        width: 100%;height: 100%;
-                        
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+
                     }
                 }
 
@@ -301,6 +300,10 @@ export default {
                 .infobox {
                     display: flex;
                     align-items: center;
+
+                    input {
+                        width: 50px;
+                    }
 
                     // justify-content: start;
                     h2,
@@ -397,5 +400,4 @@ export default {
             }
         }
     }
-}
-</style>
+}</style>

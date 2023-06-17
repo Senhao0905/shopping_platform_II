@@ -3,7 +3,9 @@ export default {
     props: ["number"],
     data() {
         return {
-            comInfo: null
+            comInfo: null,
+            comQuantity: 1,
+            changeInput: false
         }
     },
     mounted() {
@@ -30,10 +32,9 @@ export default {
     methods: {
         inCar(number) {
             console.log(number);
-            let quantity = document.getElementById("quantity").value;
             let body = {
                 commodityNumber: number,
-                quantity: quantity
+                quantity: this.comQuantity
             }
             console.log(body);
 
@@ -60,6 +61,13 @@ export default {
                         this.$router.push("/login")
                     }
                 })
+        },
+        tessst() {
+            let quantity = +this.comQuantity;
+            console.log(typeof quantity)
+            if (+this.comQuantity > 10) {
+                this.changeInput = true;
+            }
         }
     },
 }
@@ -88,7 +96,8 @@ export default {
             <div class="qty-and-select">
                 <span class="qty">數量</span>
                 <br>
-                <select name="" id="quantity" class="form-select">
+                <input v-if="changeInput" type="number" v-model="comQuantity">
+                <select v-else name="" id="quantity" class="form-select" v-model="comQuantity" @change="tessst">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -99,6 +108,7 @@ export default {
                     <option value="8">8</option>
                     <option value="9">9</option>
                     <option value="10">10</option>
+                    <option value="11">10+</option>
                 </select>
             </div>
             <span class="inventory">庫存 {{ comInfo === null ? "" : comInfo.inventory }}</span>

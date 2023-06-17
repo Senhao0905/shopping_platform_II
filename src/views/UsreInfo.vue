@@ -44,8 +44,9 @@ export default {
                this.userInfo.pwd = data.user.pwd
                this.userInfo.address = data.user.address;
                this.userInfo.phone = data.user.phone;
-               this.userInfo.src = `../../pic/${data.user.userImg}.jpg`;
-               this.pic = `../../pic/${data.user.userImg}.jpg`
+               // data:image/jpeg;base64,
+               this.userInfo.src = "data:image/jpeg;base64,"+data.user.longBase64;
+               this.pic = "data:image/jpeg;base64,"+data.user.longBase64;
                console.log(this.userInfo);
             })
       },
